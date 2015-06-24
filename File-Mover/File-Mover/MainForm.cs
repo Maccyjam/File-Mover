@@ -15,7 +15,9 @@ namespace File_Mover
 {
     public partial class MainForm : Form
     {
+        const string XML_FILE_NAME = "fileLocationData.xml";
         string[] filesToMove;
+        List<XmlGroup> fileGroups; // Used for storing Comment and ID of groups of file movements.
 
         public MainForm()
         {
@@ -30,17 +32,17 @@ namespace File_Mover
         private void loadXML()
         {
             // If the XML file does not yet exist, create it and initalise it with the root element.
-            if (!File.Exists("fileLocationData.xml"))
+            if (!File.Exists(XML_FILE_NAME))
             {
                 XDocument newDoc = new XDocument();
                 newDoc.Add(new XElement("FileLocations"));
-                newDoc.Save("fileLocationData.xml");
+                newDoc.Save(XML_FILE_NAME);
             }
             
-            XDocument loadedXml = XDocument.Load("fileLocationData.xml");
+            XDocument loadedXml = XDocument.Load(XML_FILE_NAME);
 
-            // Create a list of our structure which we populate with values from the XML file.
-            List<XmlGroup> fileGroups = new List<XmlGroup>();
+            // Initialise the list of our structure which we populate with values from the XML file.
+            fileGroups = new List<XmlGroup>();
 
             foreach (XElement groupEl in loadedXml.Element("FileLocations").Elements("group"))
             {
@@ -80,7 +82,7 @@ namespace File_Mover
 
         private void moveButton_Click(object sender, EventArgs e)
         {
-            XDocument xmlDoc = XDocument.Load("fileLocationData.xml");
+            XDocument xmlDoc = XDocument.Load(XML_FILE_NAME);
 
             XElement rootEl = xmlDoc.Element("FileLocations");
 
@@ -108,26 +110,66 @@ namespace File_Mover
 
             }
 
-            xmlDoc.Save("fileLocationData.xml");
+            xmlDoc.Save(XML_FILE_NAME);
+            loadXML();
         }
 
         private void revertButton_Click(object sender, EventArgs e)
         {
-            if (revertListBox.SelectedValue != null)
+            if (MessageBox.Show("Are you sure you want to revert this file group?", "Revert?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
             {
-
-                XDocument xmlDoc = XDocument.Load("fileLocationData.xml");
-                XElement selectedGroup = xmlDoc.Element("FileLocations").Elements("group").Where(group => group.Attribute("id").Value == revertListBox.SelectedValue.ToString()).First();
-                int count = 0;
-
-                foreach (XElement fileEl in selectedGroup.Elements("file"))
+                if (revertListBox.SelectedValue != null)
                 {
-                    File.Move(fileEl.Element("to").Value, fileEl.Element("from").Value); // We're reverting a file movement so we go from 'to' to 'from'. :D
-                    count += 1;
-                }
+                    XDocument xmlDoc = XDocument.Load(XML_FILE_NAME);
+                    // This mess of a line finds the group element that has the ID of the file movement that has been selected in the ListBox.
+                    XElement selectedGroup = xmlDoc.Element("FileLocations").Elements("group").Where(group => group.Attribute("id").Value == revertListBox.SelectedValue.ToString()).First();
+                    int count = 0;
 
-                MessageBox.Show(count + " files reverted.");
+                    foreach (XElement fileEl in selectedGroup.Elements("file"))
+                    {
+                        try
+                        {
+                            File.Move(fileEl.Element("to").Value, fileEl.Element("from").Value); // We're reverting a file movement so we go from 'to' to 'from'. :D
+                        }
+                        catch (FileNotFoundException ex)
+                        {
+                            MessageBox.Show("File " + ex.FileName + " does not exist!");
+                            break;
+                        }
+                        count += 1;
+                    }
+
+                    DeleteGroup(); // Delete the group as we've just reverted it so it's not much use to us now.
+
+                    MessageBox.Show(count + " files reverted.");
+                }
+                else
+                {
+                    MessageBox.Show("Please select a file group to revert from the box.");
+                }
             }
+        }
+
+        private void revertDeleteButton_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete this file group?", "Delete?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            {
+                DeleteGroup();
+            }
+        }
+
+        private void DeleteGroup()
+        {
+            XDocument xmlDoc = XDocument.Load(XML_FILE_NAME);
+            // Borrowed from above!
+            XElement selectedGroup = xmlDoc.Element("FileLocations").Elements("group").Where(group => group.Attribute("id").Value == revertListBox.SelectedValue.ToString()).First();
+
+            MessageBox.Show(selectedGroup.ToString());
+
+            selectedGroup.Remove();
+            xmlDoc.Save(XML_FILE_NAME);
+
+            loadXML(); // Refresh the ListBox.
         }
 
     }

@@ -41,6 +41,7 @@
             this.commentLabel = new System.Windows.Forms.Label();
             this.revertListBox = new System.Windows.Forms.ListBox();
             this.revertButton = new System.Windows.Forms.Button();
+            this.revertDeleteButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // fileSelector
@@ -146,11 +147,22 @@
             this.revertButton.UseVisualStyleBackColor = true;
             this.revertButton.Click += new System.EventHandler(this.revertButton_Click);
             // 
+            // revertDeleteButton
+            // 
+            this.revertDeleteButton.Location = new System.Drawing.Point(193, 166);
+            this.revertDeleteButton.Name = "revertDeleteButton";
+            this.revertDeleteButton.Size = new System.Drawing.Size(75, 23);
+            this.revertDeleteButton.TabIndex = 11;
+            this.revertDeleteButton.Text = "Delete";
+            this.revertDeleteButton.UseVisualStyleBackColor = true;
+            this.revertDeleteButton.Click += new System.EventHandler(this.revertDeleteButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(498, 273);
+            this.Controls.Add(this.revertDeleteButton);
             this.Controls.Add(this.revertButton);
             this.Controls.Add(this.revertListBox);
             this.Controls.Add(this.commentLabel);
@@ -185,6 +197,7 @@
         private System.Windows.Forms.Label commentLabel;
         private System.Windows.Forms.ListBox revertListBox;
         private System.Windows.Forms.Button revertButton;
+        private System.Windows.Forms.Button revertDeleteButton;
     }
 }
 
