@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace File_Mover
 {
@@ -46,12 +48,31 @@ namespace File_Mover
 
         private void moveButton_Click(object sender, EventArgs e)
         {
+            // If the XML file does not yet exist, create it and initalise it with the root element.
+            if (!File.Exists("fileLocationData.xml"))
+            {
+                XDocument newDoc = new XDocument();
+                newDoc.Add(new XElement("FileLocations"));
+                newDoc.Save("fileLocationData.xml");
+            }
+
+            XDocument xmlDoc = XDocument.Load("fileLocationData.xml");
+
+            XElement rootEl = xmlDoc.Element("FileLocations");
+
+            rootEl.Add(new XElement("group"));
+            XElement groupEl = rootEl.Elements("group").Last(); // The one we just added will be last, so we want that.
+
             foreach (string file in filesToMove)
             {
                 string fileName = file.Split('\\').Last();
                 try
                 {
                     File.Move(file, dirSelector.SelectedPath + "\\" + fileName);
+
+                    groupEl.Add(new XElement("file", 
+                        new XElement("from", file), 
+                        new XElement("to", dirSelector.SelectedPath + "\\" + fileName)));
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -60,6 +81,8 @@ namespace File_Mover
                 }
 
             }
+
+            xmlDoc.Save("fileLocationData.xml");
         }
     }
 }
