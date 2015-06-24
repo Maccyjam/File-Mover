@@ -113,7 +113,21 @@ namespace File_Mover
 
         private void revertButton_Click(object sender, EventArgs e)
         {
+            if (revertListBox.SelectedValue != null)
+            {
 
+                XDocument xmlDoc = XDocument.Load("fileLocationData.xml");
+                XElement selectedGroup = xmlDoc.Element("FileLocations").Elements("group").Where(group => group.Attribute("id").Value == revertListBox.SelectedValue.ToString()).First();
+                int count = 0;
+
+                foreach (XElement fileEl in selectedGroup.Elements("file"))
+                {
+                    File.Move(fileEl.Element("to").Value, fileEl.Element("from").Value); // We're reverting a file movement so we go from 'to' to 'from'. :D
+                    count += 1;
+                }
+
+                MessageBox.Show(count + " files reverted.");
+            }
         }
 
     }
