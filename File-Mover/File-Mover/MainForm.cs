@@ -62,6 +62,7 @@ namespace File_Mover
 
             rootEl.Add(new XElement("group"));
             XElement groupEl = rootEl.Elements("group").Last(); // The one we just added will be last, so we want that.
+            groupEl.Add(new XAttribute("comment", commentTextBox.Text)); // Add a comment for differentiating between groups.
 
             foreach (string file in filesToMove)
             {

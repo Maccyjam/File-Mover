@@ -37,6 +37,8 @@
             this.dirSelectTextBox = new System.Windows.Forms.TextBox();
             this.moveButton = new System.Windows.Forms.Button();
             this.dirSelector = new System.Windows.Forms.FolderBrowserDialog();
+            this.commentTextBox = new System.Windows.Forms.TextBox();
+            this.commentLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // fileSelector
@@ -108,11 +110,29 @@
             this.moveButton.UseVisualStyleBackColor = true;
             this.moveButton.Click += new System.EventHandler(this.moveButton_Click);
             // 
+            // commentTextBox
+            // 
+            this.commentTextBox.Location = new System.Drawing.Point(87, 122);
+            this.commentTextBox.Name = "commentTextBox";
+            this.commentTextBox.Size = new System.Drawing.Size(318, 20);
+            this.commentTextBox.TabIndex = 7;
+            // 
+            // commentLabel
+            // 
+            this.commentLabel.AutoSize = true;
+            this.commentLabel.Location = new System.Drawing.Point(8, 125);
+            this.commentLabel.Name = "commentLabel";
+            this.commentLabel.Size = new System.Drawing.Size(54, 13);
+            this.commentLabel.TabIndex = 8;
+            this.commentLabel.Text = "Comment:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(498, 273);
+            this.Controls.Add(this.commentLabel);
+            this.Controls.Add(this.commentTextBox);
             this.Controls.Add(this.moveButton);
             this.Controls.Add(this.dirSelectLabel);
             this.Controls.Add(this.dirSelectButton);
@@ -138,6 +158,8 @@
         private System.Windows.Forms.TextBox dirSelectTextBox;
         private System.Windows.Forms.Button moveButton;
         private System.Windows.Forms.FolderBrowserDialog dirSelector;
+        private System.Windows.Forms.TextBox commentTextBox;
+        private System.Windows.Forms.Label commentLabel;
     }
 }
 
