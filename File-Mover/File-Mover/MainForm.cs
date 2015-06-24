@@ -22,6 +22,38 @@ namespace File_Mover
             InitializeComponent();
         }
 
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            loadXML();   
+        }
+
+        private void loadXML()
+        {
+            // If the XML file does not yet exist, create it and initalise it with the root element.
+            if (!File.Exists("fileLocationData.xml"))
+            {
+                XDocument newDoc = new XDocument();
+                newDoc.Add(new XElement("FileLocations"));
+                newDoc.Save("fileLocationData.xml");
+            }
+            
+            XDocument loadedXml = XDocument.Load("fileLocationData.xml");
+
+            // Create a list of our structure which we populate with values from the XML file.
+            List<XmlGroup> fileGroups = new List<XmlGroup>();
+
+            foreach (XElement groupEl in loadedXml.Element("FileLocations").Elements("group"))
+            {
+                fileGroups.Add(new XmlGroup(groupEl.Attribute("comment").Value, groupEl.Attribute("id").Value));
+            }
+
+            // Set the ListBox to use our List as a data source and set the 'comment' attribute to be displayed
+            // but the 'id' attribute to be used as the value.
+            revertListBox.DataSource = fileGroups;
+            revertListBox.DisplayMember = "comment";
+            revertListBox.ValueMember = "id";
+        }
+
         private void fileSelectButton_Click(object sender, EventArgs e)
         {
             fileSelector.ShowDialog();
@@ -48,14 +80,6 @@ namespace File_Mover
 
         private void moveButton_Click(object sender, EventArgs e)
         {
-            // If the XML file does not yet exist, create it and initalise it with the root element.
-            if (!File.Exists("fileLocationData.xml"))
-            {
-                XDocument newDoc = new XDocument();
-                newDoc.Add(new XElement("FileLocations"));
-                newDoc.Save("fileLocationData.xml");
-            }
-
             XDocument xmlDoc = XDocument.Load("fileLocationData.xml");
 
             XElement rootEl = xmlDoc.Element("FileLocations");
@@ -63,6 +87,7 @@ namespace File_Mover
             rootEl.Add(new XElement("group"));
             XElement groupEl = rootEl.Elements("group").Last(); // The one we just added will be last, so we want that.
             groupEl.Add(new XAttribute("comment", commentTextBox.Text)); // Add a comment for differentiating between groups.
+            groupEl.Add(new XAttribute("id", Guid.NewGuid().ToString())); // Add a unique identifier for use when reverting.
 
             foreach (string file in filesToMove)
             {
@@ -85,5 +110,11 @@ namespace File_Mover
 
             xmlDoc.Save("fileLocationData.xml");
         }
+
+        private void revertButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

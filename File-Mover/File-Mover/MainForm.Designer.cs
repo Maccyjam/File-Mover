@@ -39,6 +39,8 @@
             this.dirSelector = new System.Windows.Forms.FolderBrowserDialog();
             this.commentTextBox = new System.Windows.Forms.TextBox();
             this.commentLabel = new System.Windows.Forms.Label();
+            this.revertListBox = new System.Windows.Forms.ListBox();
+            this.revertButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // fileSelector
@@ -126,11 +128,31 @@
             this.commentLabel.TabIndex = 8;
             this.commentLabel.Text = "Comment:";
             // 
+            // revertListBox
+            // 
+            this.revertListBox.FormattingEnabled = true;
+            this.revertListBox.Location = new System.Drawing.Point(12, 166);
+            this.revertListBox.Name = "revertListBox";
+            this.revertListBox.Size = new System.Drawing.Size(175, 95);
+            this.revertListBox.TabIndex = 9;
+            // 
+            // revertButton
+            // 
+            this.revertButton.Location = new System.Drawing.Point(193, 238);
+            this.revertButton.Name = "revertButton";
+            this.revertButton.Size = new System.Drawing.Size(75, 23);
+            this.revertButton.TabIndex = 10;
+            this.revertButton.Text = "Revert";
+            this.revertButton.UseVisualStyleBackColor = true;
+            this.revertButton.Click += new System.EventHandler(this.revertButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(498, 273);
+            this.Controls.Add(this.revertButton);
+            this.Controls.Add(this.revertListBox);
             this.Controls.Add(this.commentLabel);
             this.Controls.Add(this.commentTextBox);
             this.Controls.Add(this.moveButton);
@@ -142,6 +164,7 @@
             this.Controls.Add(this.fileSelectTextBox);
             this.Name = "MainForm";
             this.Text = "File-Mover";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -160,6 +183,8 @@
         private System.Windows.Forms.FolderBrowserDialog dirSelector;
         private System.Windows.Forms.TextBox commentTextBox;
         private System.Windows.Forms.Label commentLabel;
+        private System.Windows.Forms.ListBox revertListBox;
+        private System.Windows.Forms.Button revertButton;
     }
 }
 
